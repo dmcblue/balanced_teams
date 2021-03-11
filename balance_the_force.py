@@ -18,7 +18,7 @@ parser.add_argument("botkey", help="The discord bot key")
 parser.add_argument("rankings", help="The JSON file that holds rankings")
 args = parser.parse_args()
 
-rankings = {} #example rakings file would be {"Khellendros": 3000, "ArrrrMatey": 2000, "Ashkon": 500}
+rankings = {} #example rankings file would be {"Khellendros": 3000, "ArrrrMatey": 2000, "Ashkon": 500}
 botkey = ""
 
 if (args.rankings):
