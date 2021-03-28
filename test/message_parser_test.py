@@ -1,6 +1,6 @@
 import unittest
 import logging
-from message_parser import MessageParser
+from balance.message_parser import MessageParser
 
 class PlayerTest:
     def __init__(self, message: str, online: bool, known: bool):

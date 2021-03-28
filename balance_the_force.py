@@ -4,7 +4,9 @@ import logging
 import random
 import json
 import argparse
-from team_balancer import get_player_members, get_player_names_rank, create_balance, create_bros_balance
+from balance.team_balancer import get_player_members, get_player_names_rank, create_balance, create_bros_balance
+from balance.application import Application
+from balance.message_parser import MessageParser
 
 # Show debug messages
 logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
@@ -17,6 +19,7 @@ logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
 #TODO Move rankings to a Google Sheet and allow users to dynamically upload or apply their own rankings
 #TODO When asking the bot to create teams, tell it who to include or who to exclude
 
+# process parser
 parser = argparse.ArgumentParser()
 parser.add_argument("botkey", help="The discord bot key")
 parser.add_argument("rankings", help="The JSON file that holds rankings")
@@ -34,6 +37,8 @@ if (args.botkey):
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
+messageParser = MessageParser()
+application = Application(rankings)
 
 def list_known_players():
     return rankings
@@ -77,6 +82,7 @@ async def on_message(message):
             response_message = "OPTION " + str(option_counter) + "\n" + formated_teams(team, get_player_names_rank(message.channel.members, rankings)) + "\n"
             option_counter += 1
             await message.channel.send(response_message)
+        return
 
     if message.content.startswith('!v'):
         balanced_teams = create_balance(message.channel.members, rankings, 3)
@@ -101,6 +107,7 @@ async def on_message(message):
                     else:
                         await player.move_to(get_channel('Orange Team', message.channel.guild.voice_channels))
                 break
+        return
 
 
     if message.content.startswith('!list members'):
@@ -108,8 +115,18 @@ async def on_message(message):
         
         for member in members:
             await message.channel.send(member.name + ' ' + member.raw_status)
+        return
 
     if message.content.startswith('!debug'):
         await message.channel.send('Get out of my head!')
+        return
+
+    if message.content.startswith('!'):
+        command = messageParser.parse(message.content)
+        if command.command == '!players':
+            player_names = application.get_players(command, message.channel.members)
+            await message.channel.send(', '.join(player_names))
+        # if command.command == '!balance':
+        return
 
 client.run(botkey)

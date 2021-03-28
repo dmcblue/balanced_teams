@@ -1,5 +1,8 @@
 import argparse
 
+COMMAND_BALANCE = '!balance'
+COMMAND_PLAYERS = '!players'
+
 # https://stackoverflow.com/q/52132076/2329474
 class SplitArgs(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -11,7 +14,7 @@ parser = argparse.ArgumentParser(prog='PROG')
 subparsers = parser.add_subparsers(help='sub-command help')
 
 parser_players = subparsers.add_parser(
-    '!players',
+    COMMAND_PLAYERS,
     help='list players'
 )
 parser_players.add_argument(
@@ -24,10 +27,10 @@ parser_players.add_argument(
     action='store_true',
     help='Limit responses to players with known rankings'
 )
-parser_players.set_defaults(command='!players')
+parser_players.set_defaults(command=COMMAND_PLAYERS)
 
 parser_balance = subparsers.add_parser(
-    '!balance',
+    COMMAND_BALANCE,
     help='creates balanced teams'
 )
 parser_balance.add_argument(
@@ -40,7 +43,7 @@ parser_balance.add_argument(
     action=SplitArgs,
     help='Comma separated Discord usernames to omit from the team calculation'
 )
-parser_balance.set_defaults(command='!balance')
+parser_balance.set_defaults(command=COMMAND_BALANCE)
 
 class MessageParser:
     def __init__(self):

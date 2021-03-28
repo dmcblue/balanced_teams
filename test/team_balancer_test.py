@@ -1,8 +1,8 @@
 import unittest
 import logging
-from team_balancer import get_player_members, get_player_names_rank, create_balance, create_bros_balance
+from balance.team_balancer import get_player_members, get_player_names_rank, create_balance, create_bros_balance
 import mocks
-from utils import get_team_by_member, members_to_rankings
+from test_utils import get_team_by_member, members_to_rankings
 
 # Uncomment to show debug output
 # logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
