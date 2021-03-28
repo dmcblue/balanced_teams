@@ -1,12 +1,14 @@
 import itertools
 import logging
 
+OFFLINE_STATUS = "offline"
+
 def get_player_members(members, rankings):
     
     active_player_members = []
 
     for member in members:
-        if member.raw_status != "offline":
+        if member.raw_status != OFFLINE_STATUS:
             if member.name in rankings:
                 active_player_members.append(member)
 
@@ -17,12 +19,14 @@ def get_player_names_rank(members, rankings):
     active_players = {}
 
     for member in members:
-        if member.raw_status != "offline":
+        if member.raw_status != OFFLINE_STATUS:
             if member.name in rankings:
                 active_players.update({member.name: rankings[member.name]})
     
     return active_players
 
+# returns 2 part tuple, first is a list of member names,
+#     second the total ranking of all those members
 def create_balance(members, rankings, number_of_teams_to_return):
 
     players = get_player_names_rank(members, rankings)

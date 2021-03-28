@@ -126,7 +126,30 @@ async def on_message(message):
         if command.command == '!players':
             player_names = application.get_players(command, message.channel.members)
             await message.channel.send(', '.join(player_names))
-        # if command.command == '!balance':
+        if command.command == '!balance':
+            balanced_teams = create_balance(message.channel.members, rankings, 3)
+            option_counter = 1
+            for team in balanced_teams:
+                response_message = "OPTION " + str(option_counter) + "\n" + formated_teams(team, get_player_names_rank(message.channel.members, rankings)) + "\n"
+                option_counter += 1
+                await message.channel.send(response_message)
+
+                if command.verify:
+                    def check_reaction(reaction, user):
+                        return user == message.author and str(reaction.emoji) == '👍'
+
+                    try:
+                        reaction, user = await client.wait_for('reaction_add', timeout=10.0, check=check_reaction)
+                    except asyncio.TimeoutError:
+                        await message.channel.send('👎')
+                    else:
+                        await message.channel.send('Moving players.')
+                        for player in get_player_members(message.channel.members, rankings):
+                            if player.name in team[0]:
+                                await player.move_to(get_channel('Blue Team', message.channel.guild.voice_channels))
+                            else:
+                                await player.move_to(get_channel('Orange Team', message.channel.guild.voice_channels))
+                        break
         return
 
 client.run(botkey)
