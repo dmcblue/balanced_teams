@@ -127,10 +127,14 @@ async def on_message(message):
             player_names = application.get_players(command, message.channel.members)
             await message.channel.send(', '.join(player_names))
         if command.command == '!balance':
-            balanced_teams = create_balance(message.channel.members, rankings, 3)
+            members = message.channel.members
+            if command.skip != None:
+                members = filter(lambda member: member.name in command.skip, members)
+
+            balanced_teams = create_balance(members, rankings, 3)
             option_counter = 1
             for team in balanced_teams:
-                response_message = "OPTION " + str(option_counter) + "\n" + formated_teams(team, get_player_names_rank(message.channel.members, rankings)) + "\n"
+                response_message = "OPTION " + str(option_counter) + "\n" + formated_teams(team, get_player_names_rank(members, rankings)) + "\n"
                 option_counter += 1
                 await message.channel.send(response_message)
 
@@ -144,7 +148,7 @@ async def on_message(message):
                         await message.channel.send('👎')
                     else:
                         await message.channel.send('Moving players.')
-                        for player in get_player_members(message.channel.members, rankings):
+                        for player in get_player_members(members, rankings):
                             if player.name in team[0]:
                                 await player.move_to(get_channel('Blue Team', message.channel.guild.voice_channels))
                             else:
