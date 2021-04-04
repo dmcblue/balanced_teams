@@ -3,6 +3,18 @@ Create two teams that are as balanced as possible.
 
 ## Installation
 
+### Python
+Recommend using [pyenv](https://github.com/pyenv/pyenv) to install and manage python.
+
+If you use `pyenv`, you can install the correct version with:
+
+```sh
+# see .python-version
+pyenv install
+```
+
+### Dependencies
+
 ```sh
 pip install -r requirements.txt
 ```
