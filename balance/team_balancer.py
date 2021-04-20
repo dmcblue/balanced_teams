@@ -1,7 +1,27 @@
 import itertools
 import logging
+from balance.utils import list_partition
 
+# Typings
+TeamNames = list[str]
+
+# Constants
 OFFLINE_STATUS = "offline"
+
+def sort_teams(teams: list[TeamNames]) -> list[TeamNames]:
+    teams = map(lambda team: sorted(team), teams)
+    return sorted(teams, key=lambda team: team[0])
+
+def create_teams_from_names(names:list[str], num_teams:int) -> list[TeamNames]:
+    permutations = itertools.permutations(names)
+    s = set()
+    for permutation in permutations:
+        teams = list_partition(permutation, num_teams)
+        teams = sort_teams(teams)
+        teams_hash = ';'.join(map(lambda team: ','.join(team), teams))
+        if teams_hash not in s:
+            s.add(teams_hash)
+            yield teams
 
 def get_player_members(members, rankings):
     
