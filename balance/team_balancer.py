@@ -3,22 +3,6 @@ import logging
 
 OFFLINE_STATUS = "offline"
 
-def create_team_generator(player_names):
-    team_combos = itertools.combinations(player_names, len(player_names)//2)
-    existing_teams = []
-    for team in team_combos:
-        team = list(team)
-        team.sort()
-        opposing_team = get_opposing_team(player_names, team)
-        opposing_team.sort()
-        if team not in existing_teams and opposing_team not in existing_teams:
-            existing_teams.append(team)
-            existing_teams.append(opposing_team)
-            yield team
-
-def get_opposing_team(player_names, team):
-    return list(filter(lambda name: name not in team, player_names)) 
-
 def get_player_members(members, rankings):
     
     active_player_members = []
@@ -30,10 +14,6 @@ def get_player_members(members, rankings):
 
     return active_player_members
 
-# Fetches a mapping of player names to their rank
-# @param members Discord member objects
-# @param rankings Map of player names to rank
-# @return Map of player names to rank, filtered on presence online
 def get_player_names_rank(members, rankings):
     
     active_players = {}
@@ -53,9 +33,7 @@ def create_balance(members, rankings, number_of_teams_to_return):
 
     player_rankings = players.values()
     team_ranking_target = sum(player_rankings) // 2
-    # team_combos = itertools.combinations(players, len(players)//2)
-    # print(players, next(team_combos))
-    team_combos = create_team_generator(players.keys())
+    team_combos = itertools.combinations(players, len(players)//2)
 
     logging.info(f"Total ranking sum: {sum(player_rankings)}")
     logging.info(f"Target ranking for even teams: {team_ranking_target}")
@@ -65,8 +43,8 @@ def create_balance(members, rankings, number_of_teams_to_return):
         team_strength = 0
         for player in combo:
             team_strength += players[player]
-        # print(teams, team_strength) 
-        teams.update({tuple(combo): team_strength})
+        
+        teams.update({combo: team_strength})
 
     sorted_teams = sorted(teams.items(), key=lambda x: abs(x[1] - team_ranking_target), reverse=False)
 
