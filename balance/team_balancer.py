@@ -4,6 +4,9 @@ from balance.utils import list_partition
 
 # Typings
 TeamNames = list[str]
+PlayerRankings = dict[str, float]
+Balance = list[TeamNames]
+RankedBalance = tuple[Balance, float]
 
 # Constants
 OFFLINE_STATUS = "offline"
@@ -22,6 +25,17 @@ def create_teams_from_names(names:list[str], num_teams:int) -> list[TeamNames]:
         if teams_hash not in s:
             s.add(teams_hash)
             yield teams
+
+def get_team_rank(names: TeamNames, player_rankings: PlayerRankings) -> float:
+    return sum(map(lambda name: player_rankings[name], names))
+
+def get_balance_rank(teams: list[TeamNames], player_rankings: PlayerRankings) -> float:
+    team_ranks = list(map(lambda team: get_team_rank(team, player_rankings), teams))
+    target = sum(team_ranks) / len(teams)
+    return sum(map(lambda rank: abs(target - rank), team_ranks))
+
+def rank_balances(balances: list[list[TeamNames]], player_rankings: PlayerRankings) -> list[RankedBalance]:
+    return sorted(map(lambda teams: (teams, get_balance_rank(teams, player_rankings)), balances))
 
 def get_player_members(members, rankings):
     
