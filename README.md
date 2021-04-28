@@ -25,8 +25,35 @@ If left blank, the app directory will be used. If provided, it must be an absolu
 
 The `.env` file will need to exist, but the values can be overridden using command line arguments:
 ```sh
-python balance_the_force.py --botkey ABC123 --rankings /path/to/dir
+python balance_the_force.py --botkey ABC123 --rankings /path/to/dir --verbose
 ```
+
+### As a Service
+
+If you are on a \*nix system which uses [systemd](https://en.wikipedia.org/wiki/Systemd), you can run the bot as a service unit.
+You can create the service file with:
+
+```
+# From this repository
+sudo service.py
+```
+
+This will place the service file at `/etc/systemd/system/balance_the_force@.service`.
+
+**Warning**: This file assumes you have Python installed via `pyenv` for *your* user.
+If that is not correct, edit the service file with the correct Python executable.
+
+
+You will then be able to start the service with:
+```sh
+sudo systemctl start balance_the_force@[Your User Name]
+# See if its working
+sudo systemctl status balance_the_force@[Your User Name]
+# If you want it to start on system boot
+sudo systemctl enable balance_the_force@[Your User Name]
+```
+
+Windows and MacOS have their own service management which still needs to be implemented.
 
 ## Testing
 
