@@ -10,9 +10,6 @@ from balance.team_balancer import get_player_members, get_player_names_rank, cre
 from balance.application import Application
 from balance.message_parser import MessageParser
 
-# Show debug messages
-logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
-
 # https://github.com/Rapptz/discord.py
 # https://discordpy.readthedocs.io/en/latest/index.html
 
@@ -26,7 +23,15 @@ load_dotenv()
 parser = argparse.ArgumentParser()
 parser.add_argument("--botkey", help="The discord bot key")
 parser.add_argument("--rankings", help="The directory that holds rankings")
+parser.add_argument("--verbose", action='store_true', help="Shows logging from Discord")
 args = parser.parse_args()
+
+# Show debug messages
+logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+if not args.verbose:
+    logging.getLogger("asyncio").setLevel(logging.CRITICAL + 1)
+    logging.getLogger("discord").setLevel(logging.CRITICAL + 1)
+
 
 rankings_directory = ""
 rankings = {} #example rankings file would be {"Khellendros": 3000, "ArrrrMatey": 2000, "Ashkon": 500}
